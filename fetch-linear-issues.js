@@ -88,6 +88,23 @@ async function fetchUserIssues() {
       const cycle = await issue.cycle;
       const assignee = await issue.assignee;
 
+      // Fetch labels
+      const labelsConnection = await issue.labels;
+      const labels = labelsConnection?.nodes || [];
+      const labelNames = labels.length > 0 ? labels.map(label => label.name) : null;
+
+      // Fetch comments
+      const commentsConnection = await issue.comments;
+      const comments = commentsConnection?.nodes || [];
+      const commentsList = comments.length > 0
+        ? comments.map(comment => ({
+            id: comment.id || null,
+            body: comment.body || null,
+            createdAt: comment.createdAt || null,
+            user: comment.user?.name || null
+          }))
+        : null;
+
       // Create issue object with all fields, using null for missing values
       const issueData = {
         id: issue.id || null,
@@ -97,6 +114,7 @@ async function fetchUserIssues() {
         team: team?.name || null,
         priority: issue.priority !== undefined ? issue.priority : null,
         description: issue.description || null,
+        labels: labelNames,
         url: issue.url || null,
         assignee: assignee?.name || null,
         project: project?.name || null,
@@ -106,7 +124,8 @@ async function fetchUserIssues() {
         createdAt: issue.createdAt || null,
         updatedAt: issue.updatedAt || null,
         completedAt: issue.completedAt || null,
-        archivedAt: issue.archivedAt || null
+        archivedAt: issue.archivedAt || null,
+        comments: commentsList
       };
 
       issuesData.push(issueData);

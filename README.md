@@ -43,10 +43,12 @@ node fetch-linear-issues.js
   - Status (workflow state)
   - Team, project, and cycle
   - Priority
+  - Labels (as array of label names)
   - Assignee
   - Estimate and due date
   - Created, updated, completed, and archived timestamps
   - Direct URL to the issue
+  - Comments (with comment body, author, and timestamp)
 - Missing field values are explicitly set to `null` in YAML output
 
 ## Output
@@ -85,6 +87,9 @@ The script exports all issues to a YAML file named `linear-issues.yml` in the cu
   team: Engineering
   priority: 1
   description: This feature was completed and archived for historical reference.
+  labels:
+    - enhancement
+    - completed
   url: https://linear.app/team/issue/ENG-100
   assignee: John Doe
   project: null
@@ -95,6 +100,11 @@ The script exports all issues to a YAML file named `linear-issues.yml` in the cu
   updatedAt: '2025-09-20T10:30:00.000Z'
   completedAt: '2025-09-20T10:30:00.000Z'
   archivedAt: '2025-09-20T10:30:00.000Z'
+  comments:
+    - id: comment-1
+      body: This looks good to me, shipping it!
+      createdAt: '2025-09-20T09:00:00.000Z'
+      user: Jane Smith
 - id: jkl012-mno345-pqr678
   identifier: ENG-123
   title: Fix login bug
@@ -102,6 +112,10 @@ The script exports all issues to a YAML file named `linear-issues.yml` in the cu
   team: Engineering
   priority: 3
   description: Users are experiencing issues when logging in with SSO. The authentication flow hangs after redirecting from the identity provider.
+  labels:
+    - bug
+    - authentication
+    - high-priority
   url: https://linear.app/team/issue/ENG-123
   assignee: John Doe
   project: Authentication Improvements
@@ -112,6 +126,15 @@ The script exports all issues to a YAML file named `linear-issues.yml` in the cu
   updatedAt: '2025-10-09T14:30:00.000Z'
   completedAt: null
   archivedAt: null
+  comments:
+    - id: comment-2
+      body: I've identified the root cause. Working on a fix now.
+      createdAt: '2025-10-08T10:30:00.000Z'
+      user: John Doe
+    - id: comment-3
+      body: Can we prioritize this? It's blocking several users.
+      createdAt: '2025-10-09T08:15:00.000Z'
+      user: Alice Johnson
 - id: stu901-vwx234-yz567
   identifier: ENG-124
   title: Add dark mode
@@ -119,6 +142,9 @@ The script exports all issues to a YAML file named `linear-issues.yml` in the cu
   team: Engineering
   priority: 2
   description: Implement a dark mode theme for better user experience in low-light environments.
+  labels:
+    - feature
+    - ui
   url: https://linear.app/team/issue/ENG-124
   assignee: John Doe
   project: UI Enhancements
@@ -129,6 +155,7 @@ The script exports all issues to a YAML file named `linear-issues.yml` in the cu
   updatedAt: '2025-10-08T16:45:00.000Z'
   completedAt: null
   archivedAt: null
+  comments: null
 ```
 
 ## Pagination
