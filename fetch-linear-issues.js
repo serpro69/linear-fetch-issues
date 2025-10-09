@@ -144,6 +144,24 @@ async function fetchUserIssues() {
     // Build YAML data structure
     const issuesData = [];
 
+    // Helper function to trim empty lines from beginning/end of text
+    const trimEmptyLines = (text) => {
+      if (!text) return null;
+      const lines = text.split('\n');
+
+      // Remove empty lines from start
+      while (lines.length > 0 && lines[0].trim() === '') {
+        lines.shift();
+      }
+
+      // Remove empty lines from end
+      while (lines.length > 0 && lines[lines.length - 1].trim() === '') {
+        lines.pop();
+      }
+
+      return lines.length > 0 ? lines.join('\n') : null;
+    };
+
     for (const issue of issueNodes) {
       // All data is already fetched, no more API calls needed!
       const labels = issue.labels?.nodes || [];
@@ -153,7 +171,7 @@ async function fetchUserIssues() {
       const commentsList = comments.length > 0
         ? comments.map(comment => ({
             id: comment.id || null,
-            body: comment.body || null,
+            body: trimEmptyLines(comment.body),
             createdAt: comment.createdAt || null,
             resolvedAt: comment.resolvedAt || null,
             user: comment.user?.name || null
@@ -168,7 +186,7 @@ async function fetchUserIssues() {
         status: issue.state?.name || null,
         team: issue.team?.name || null,
         priority: issue.priority !== undefined ? issue.priority : null,
-        description: issue.description || null,
+        description: trimEmptyLines(issue.description),
         labels: labelNames,
         url: issue.url || null,
         assignee: issue.assignee?.name || null,

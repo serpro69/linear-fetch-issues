@@ -1,35 +1,46 @@
 # Linear Issues Fetcher
 
-A simple Node.js script to fetch all issues assigned to you from Linear and export them to a YAML file.
+A simple Node.js script to fetch all issues from Linear that are assigned to you ...and export them to a YAML file.
 
-## Setup
+> Wait, but why? 🤔 
 
-1. **Install dependencies:**
+Short answer: because... why not? 🤷
+
+Long(-ish) answer: I tend to write a bunch of information in some of my issues as I work on them, especially in issues related to exploration or prototyping. Sometimes these include (semi-)valuable "lessons learned", which I might not always immediately port to my PKM/Second-Brain Vault (i.e. they get lost). And sometimes I end up trying to find these via issue search... which is far from fun. Parsing a yaml file that contains all this information is much simpler... 😏
+
+## Usage
+
+- **Install dependencies:**
+
    ```bash
    npm install
    ```
 
-2. **Get your Linear API key:**
+- **Get/Create your Linear API key:**
+
    - Go to https://linear.app/settings/api
    - Create a new Personal API Key
    - Copy the key
 
-3. **Set the API key as an environment variable:**
+- **Set the API key as an environment variable:**
+
    ```bash
    export LINEAR_API_KEY=your_api_key_here
    ```
 
-## Usage
+- **Run the script with `npm`:**
 
-Run the script:
-```bash
-npm start
-```
+    ```bash
+    npm start
+    ```
 
-Or directly:
-```bash
-node fetch-linear-issues.js
-```
+- **Or directly with `node`:**
+
+    ```bash
+    node fetch-linear-issues.js
+    ```
+
+- **Profit** 🤑
 
 ## Features
 
@@ -51,6 +62,7 @@ node fetch-linear-issues.js
   - Comments (with comment body, author, creation timestamp, and resolution timestamp)
 - Missing field values are explicitly set to `null` in YAML output
 - All comments are included (both resolved and unresolved)
+- Empty lines trimmed from beginning/end of descriptions and comment bodies
 
 ## Output
 
