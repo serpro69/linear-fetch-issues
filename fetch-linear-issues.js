@@ -186,11 +186,30 @@ async function fetchUserIssues() {
       issuesData.push(issueData);
     }
 
-    // Sort issues by identifier (ID)
+    // Sort issues by identifier (ID) with natural number sorting
+    // ENG-99 comes before ENG-123
     issuesData.sort((a, b) => {
       if (!a.identifier) return 1;
       if (!b.identifier) return -1;
-      return a.identifier.localeCompare(b.identifier);
+
+      // Extract prefix and number from identifier (e.g., "ENG-123" -> ["ENG", 123])
+      const parseIdentifier = (id) => {
+        const match = id.match(/^([A-Za-z]+)-(\d+)$/);
+        if (match) {
+          return { prefix: match[1], number: parseInt(match[2], 10) };
+        }
+        return { prefix: id, number: 0 };
+      };
+
+      const parsedA = parseIdentifier(a.identifier);
+      const parsedB = parseIdentifier(b.identifier);
+
+      // First compare by prefix (team name)
+      const prefixCompare = parsedA.prefix.localeCompare(parsedB.prefix);
+      if (prefixCompare !== 0) return prefixCompare;
+
+      // Then compare by number numerically
+      return parsedA.number - parsedB.number;
     });
 
     console.log(`✅ Processed ${issuesData.length} issues\n`);

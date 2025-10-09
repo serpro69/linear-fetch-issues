@@ -54,7 +54,7 @@ node fetch-linear-issues.js
 
 ## Output
 
-The script exports all issues to a YAML file named `linear-issues.yml` in the current directory. Issues are sorted by their identifier (e.g., ENG-100, ENG-101, etc.).
+The script exports all issues to a YAML file named `linear-issues.yml` in the current directory. Issues are sorted by their identifier using natural number sorting (e.g., ENG-1, ENG-9, ENG-10, ENG-99, ENG-100, ENG-123).
 
 ## Example Console Output
 
