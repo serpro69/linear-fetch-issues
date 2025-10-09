@@ -1,0 +1,16 @@
+{
+  "name": "linear-issues-fetcher",
+  "version": "1.0.0",
+  "description": "Simple script to fetch all user's issues from Linear and export to YAML",
+  "main": "fetch-linear-issues.js",
+  "scripts": {
+    "start": "node fetch-linear-issues.js"
+  },
+  "dependencies": {
+    "@linear/sdk": "^38.0.0",
+    "js-yaml": "^4.1.0"
+  },
+  "keywords": ["linear", "issues", "sdk"],
+  "author": "",
+  "license": "MIT"
+}
