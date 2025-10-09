@@ -48,23 +48,85 @@ async function fetchUserIssues() {
     let pageCount = 0;
 
     while (hasNextPage) {
-      const issues = await linearClient.issues({
-        filter: {
-          assignee: { id: { eq: me.id } }
-        },
-        orderBy: 'updatedAt',
-        includeArchived: true,
-        first: 100, // Fetch 100 issues per page for efficiency
-        after: afterCursor
-      });
+      // Use raw GraphQL query to fetch all data at once (avoid lazy loading)
+      const query = `
+        query($userId: ID!, $first: Int!, $after: String, $includeArchived: Boolean!) {
+          issues(
+            filter: { assignee: { id: { eq: $userId } } }
+            orderBy: updatedAt
+            includeArchived: $includeArchived
+            first: $first
+            after: $after
+          ) {
+            nodes {
+              id
+              identifier
+              title
+              description
+              url
+              priority
+              estimate
+              dueDate
+              createdAt
+              updatedAt
+              completedAt
+              archivedAt
+              state {
+                name
+              }
+              team {
+                name
+              }
+              project {
+                name
+              }
+              cycle {
+                name
+              }
+              assignee {
+                name
+              }
+              labels {
+                nodes {
+                  name
+                }
+              }
+              comments {
+                nodes {
+                  id
+                  body
+                  createdAt
+                  user {
+                    name
+                  }
+                }
+              }
+            }
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+          }
+        }
+      `;
 
-      allIssues = allIssues.concat(issues.nodes);
+      const variables = {
+        userId: me.id,
+        first: 100,
+        after: afterCursor,
+        includeArchived: true
+      };
+
+      const response = await linearClient._request(query, variables);
+      const issuesData = response.issues;
+
+      allIssues = allIssues.concat(issuesData.nodes);
       pageCount++;
 
-      hasNextPage = issues.pageInfo.hasNextPage;
-      afterCursor = issues.pageInfo.endCursor;
+      hasNextPage = issuesData.pageInfo.hasNextPage;
+      afterCursor = issuesData.pageInfo.endCursor;
 
-      console.log(`   Fetched page ${pageCount}: ${issues.nodes.length} issues (Total so far: ${allIssues.length})`);
+      console.log(`   Fetched page ${pageCount}: ${issuesData.nodes.length} issues (Total so far: ${allIssues.length})`);
     }
 
     const issueNodes = allIssues;
@@ -82,20 +144,11 @@ async function fetchUserIssues() {
     const issuesData = [];
 
     for (const issue of issueNodes) {
-      const state = await issue.state;
-      const team = await issue.team;
-      const project = await issue.project;
-      const cycle = await issue.cycle;
-      const assignee = await issue.assignee;
-
-      // Fetch labels
-      const labelsConnection = await issue.labels;
-      const labels = labelsConnection?.nodes || [];
+      // All data is already fetched, no more API calls needed!
+      const labels = issue.labels?.nodes || [];
       const labelNames = labels.length > 0 ? labels.map(label => label.name) : null;
 
-      // Fetch comments
-      const commentsConnection = await issue.comments;
-      const comments = commentsConnection?.nodes || [];
+      const comments = issue.comments?.nodes || [];
       const commentsList = comments.length > 0
         ? comments.map(comment => ({
             id: comment.id || null,
@@ -110,15 +163,15 @@ async function fetchUserIssues() {
         id: issue.id || null,
         identifier: issue.identifier || null,
         title: issue.title || null,
-        status: state?.name || null,
-        team: team?.name || null,
+        status: issue.state?.name || null,
+        team: issue.team?.name || null,
         priority: issue.priority !== undefined ? issue.priority : null,
         description: issue.description || null,
         labels: labelNames,
         url: issue.url || null,
-        assignee: assignee?.name || null,
-        project: project?.name || null,
-        cycle: cycle?.name || null,
+        assignee: issue.assignee?.name || null,
+        project: issue.project?.name || null,
+        cycle: issue.cycle?.name || null,
         estimate: issue.estimate || null,
         dueDate: issue.dueDate || null,
         createdAt: issue.createdAt || null,

@@ -158,13 +158,20 @@ The script exports all issues to a YAML file named `linear-issues.yml` in the cu
   comments: null
 ```
 
-## Pagination
+## Pagination & Rate Limiting
 
 The script automatically handles pagination to fetch **all** your issues, not just the first 50. It:
 - Fetches 100 issues per page for efficiency
 - Shows progress as it fetches each page
 - Continues until all issues are retrieved
 - Works seamlessly even if you have hundreds or thousands of issues
+
+**Optimized for Rate Limits:**
+
+- Uses a single GraphQL query per page to fetch all data (issue details, comments, labels, etc.)
+- Avoids lazy loading which would trigger multiple API calls per issue
+- For 250 issues: only **3 API calls**, 1 per page.
+- Stays well under Linear's 1,500 requests/hour limit even for thousands of issues.
 
 ## Priority Levels
 
