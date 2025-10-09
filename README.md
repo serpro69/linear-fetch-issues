@@ -48,8 +48,9 @@ node fetch-linear-issues.js
   - Estimate and due date
   - Created, updated, completed, and archived timestamps
   - Direct URL to the issue
-  - Comments (with comment body, author, and timestamp)
+  - Comments (with comment body, author, creation timestamp, and resolution timestamp)
 - Missing field values are explicitly set to `null` in YAML output
+- All comments are included (both resolved and unresolved)
 
 ## Output
 
@@ -104,6 +105,7 @@ The script exports all issues to a YAML file named `linear-issues.yml` in the cu
     - id: comment-1
       body: This looks good to me, shipping it!
       createdAt: '2025-09-20T09:00:00.000Z'
+      resolvedAt: '2025-09-20T09:15:00.000Z'
       user: Jane Smith
 - id: jkl012-mno345-pqr678
   identifier: ENG-123
@@ -130,10 +132,12 @@ The script exports all issues to a YAML file named `linear-issues.yml` in the cu
     - id: comment-2
       body: I've identified the root cause. Working on a fix now.
       createdAt: '2025-10-08T10:30:00.000Z'
+      resolvedAt: null
       user: John Doe
     - id: comment-3
       body: Can we prioritize this? It's blocking several users.
       createdAt: '2025-10-09T08:15:00.000Z'
+      resolvedAt: null
       user: Alice Johnson
 - id: stu901-vwx234-yz567
   identifier: ENG-124

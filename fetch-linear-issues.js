@@ -96,6 +96,7 @@ async function fetchUserIssues() {
                   id
                   body
                   createdAt
+                  resolvedAt
                   user {
                     name
                   }
@@ -154,6 +155,7 @@ async function fetchUserIssues() {
             id: comment.id || null,
             body: comment.body || null,
             createdAt: comment.createdAt || null,
+            resolvedAt: comment.resolvedAt || null,
             user: comment.user?.name || null
           }))
         : null;
