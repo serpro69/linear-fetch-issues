@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@linear/sdk": "^38.0.0",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.3.2"
   },
   "keywords": ["linear", "issues", "sdk"],
   "author": "",
